@@ -74,15 +74,17 @@ EXAMPLE:
 </div>
 <dl>
 <dt>
-<h4 class="name" id="exorcist"><span class="type-signature"></span>exorcist<span class="signature">(file, <span class="optional">url</span>, <span class="optional">root</span>)</span><span class="type-signature"> &rarr; {TransformStream}</span></h4>
+<h4 class="name" id="exorcist"><span class="type-signature"></span>exorcist<span class="signature">(file, <span class="optional">url</span>, <span class="optional">root</span>, <span class="optional">base</span>)</span><span class="type-signature"> &rarr; {TransformStream}</span></h4>
 </dt>
 <dd>
 <div class="description">
-<p>Transforms the incoming stream of code by removing the inlined source map and writing it to an external map file.
-Additionally it adds a source map url that points to the extracted map file.</p>
-<h4>Events (other than all stream events like <code>error</code>)</h4>
+<p>Externalizes the source map of the file streamed in.</p>
+<p>The source map is written as JSON to <code>file</code>, and the original file is streamed out with its
+<code>sourceMappingURL</code> set to the path of <code>file</code> (or to the value of <code>url</code>).</p>
+<h4>Events (in addition to stream events)</h4>
 <ul>
-<li><code>missing-map</code> emitted if no map was found in the stream (the src still is piped through in this case, but no map file is written)</li>
+<li><code>missing-map</code> emitted if no map was found in the stream
+(the src is still piped through in this case, but no map file is written)</li>
 </ul>
 </div>
 <h5>Parameters:</h5>
@@ -113,7 +115,7 @@ Additionally it adds a source map url that points to the extracted map file.</p>
 <td class="attributes">
 &lt;optional><br>
 </td>
-<td class="description last"><p>allows overriding the url at which the map file is found (default: name of map file)</p></td>
+<td class="description last"><p>full URL to the map file, set as <code>sourceMappingURL</code> in the streaming output (default: file)</p></td>
 </tr>
 <tr>
 <td class="name"><code>root</code></td>
@@ -123,7 +125,17 @@ Additionally it adds a source map url that points to the extracted map file.</p>
 <td class="attributes">
 &lt;optional><br>
 </td>
-<td class="description last"><p>allows adjusting the source maps <code>sourceRoot</code> field (default: '')</p></td>
+<td class="description last"><p>root URL for loading relative source paths, set as <code>sourceRoot</code> in the source map (default: '')</p></td>
+</tr>
+<tr>
+<td class="name"><code>base</code></td>
+<td class="type">
+<span class="param-type">String</span>
+</td>
+<td class="attributes">
+&lt;optional><br>
+</td>
+<td class="description last"><p>base path for calculating relative source paths (default: use absolute paths)</p></td>
 </tr>
 </tbody>
 </table>
@@ -133,7 +145,7 @@ Additionally it adds a source map url that points to the extracted map file.</p>
 <li>
 <a href="https://github.com/thlorenz/exorcist/blob/master/index.js">index.js</a>
 <span>, </span>
-<a href="https://github.com/thlorenz/exorcist/blob/master/index.js#L27">lineno 27</a>
+<a href="https://github.com/thlorenz/exorcist/blob/master/index.js#L34">lineno 34</a>
 </li>
 </ul></dd>
 </dl>
