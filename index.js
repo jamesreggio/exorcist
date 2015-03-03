@@ -5,14 +5,21 @@ var convert = require('convert-source-map')
   , fs = require('fs')
   , through = require('through2');
 
-function separate(src, file, root, url) {
+function separate(src, file, root, base, url) {
   var inlined = convert.fromSource(src);
 
   if (!inlined) return null;
 
-  var json = inlined
-    .setProperty('sourceRoot', root || '')
-    .toJSON(2);
+  inlined = inlined.setProperty('sourceRoot', root || '');
+
+  if (base) {
+    var sources = inlined.getProperty('sources').map(function(source) {
+      return path.relative(base, source);
+    });
+    inlined = inlined.setProperty('sources', sources);
+  }
+
+  var json = inlined.toJSON(2);
 
   url = url || path.basename(file);
 
@@ -35,17 +42,17 @@ var go = module.exports =
  * @name exorcist
  * @function
  * @param {String} file full path to the map file to which to write the extracted source map
- * @param {String=} url  allows overriding the url at which the map file is found (default: name of map file)
+ * @param {String=} url  allows overriding the url at which the map file is found (default: name of
  * @param {String=} root allows adjusting the source maps `sourceRoot` field (default: '')
  * @return {TransformStream} transform stream into which to pipe the code containing the source map
  */
-function exorcist(file, url, root) {
+function exorcist(file, url, root, base) {
   var src = '';
 
   function ondata(d, _, cb) { src += d; cb(); }
   function onend(cb) {
     var self = this;
-    var separated = separate(src, file, root, url);
+    var separated = separate(src, file, root, base, url);
     if (!separated) {
       self.emit(
           'missing-map'
