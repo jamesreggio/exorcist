@@ -37,21 +37,24 @@ browserify main.js --debug | exorcist bundle.js.map > bundle.js
 ## Usage
 
 ```
-exorcist <mapfile> <exorcist-options>
+usage: exorcist map_file [options]
 
-  Externalizes the source map of a file that is streamed into it by pointing its source map url to the <mapfile>.
-  The original source map is written to the <mapfile> as json.
-  
+  Externalizes the source map of the file streamed in.
+
+  The source map is written as JSON to map_file, and the original file is streamed out with its
+  sourceMappingURL set to the path of map_file (or to the value of the --url option).
+
 OPTIONS:
 
-  --root -r   The path to the original source to be included in the source map.   (default '')
-  --url  -u   The path to the source map to which to point the sourceMappingURL.  (default <mapfile>)
+  --base -b   Base path for calculating relative source paths. (default: use absolute paths)
+  --root -r   Root URL for loading relative source paths. Set as sourceRoot in the source map. (default: '')
+  --url  -u   Full URL to source map. Set as sourceMappingURL in the output stream. (default: map_file)
 
 EXAMPLE:
 
-  Bundle main.js with browserify into bundle.js and externalize the map to bundle.js.map
+  Bundle main.js with browserify into bundle.js and externalize the map to bundle.js.map.
 
-    browserify main.js --debug | exorcist bundle.js.map > bundle.js 
+    browserify main.js --debug | exorcist bundle.js.map > bundle.js
 ```
 
 ## Installation
