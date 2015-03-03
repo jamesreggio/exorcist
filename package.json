@@ -1,6 +1,6 @@
 {
   "name": "exorcist",
-  "version": "0.1.6",
+  "version": "0.1.7-pre",
   "description": "Externalizes the source map found inside a stream to an external `.js.map` file",
   "bin": {
     "exorcist": "./bin/exorcist.js"
