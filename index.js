@@ -10,6 +10,10 @@ function separate(src, file, root, base, url) {
 
   if (!inlined) return null;
 
+  var commentRx = /^\s*\/(\/|\*)[@#]\s+sourceMappingURL/mg;
+  var commentMatch = commentRx.exec(src);
+  var commentBlock = (commentMatch && commentMatch[1] === '*');
+
   inlined = inlined.setProperty('sourceRoot', root || '');
 
   if (base) {
@@ -24,7 +28,13 @@ function separate(src, file, root, base, url) {
   url = url || path.basename(file);
 
   var newSrc = convert.removeComments(src);
-  var comment = '//# sourceMappingURL=' + url;
+
+  var comment = '';
+  if (commentBlock) {
+    comment = '/*# sourceMappingURL=' + url + ' */';
+  } else {
+    comment = '//# sourceMappingURL=' + url;
+  }
 
   return { json: json, src: newSrc + '\n' + comment }
 }
